@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from .database import init_db
 from .routers import user_router
 from app.routers import translate_banglish
+from app.routers import document
 
 
 @asynccontextmanager
@@ -24,6 +25,7 @@ app.add_middleware(
 
 app.include_router(user_router)
 app.include_router(translate_banglish.router)
+app.include_router(document.router)
 
 
 @app.get("/")
