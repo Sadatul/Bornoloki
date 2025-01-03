@@ -6,3 +6,5 @@ pydantic-settings
 python-dotenv
 psycopg2
 redis==5.0.1
+python-jose[cryptography]>=3.3.0
+supabase>=2.3.0
