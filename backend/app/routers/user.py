@@ -97,3 +97,27 @@ async def admin_route(payload: dict = Depends(verify_auth)):
         "user": payload
     }
 
+@router.get("/{user_id}", response_model=UserRead)
+async def get_user(
+    user_id: int,
+    session: Session = Depends(get_session)
+):
+    try:
+        # Get user from database
+        user = session.get(User, user_id)
+        if not user:
+            raise HTTPException(
+                status_code=404,
+                detail="User not found"
+            )
+
+        return user
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to fetch user: {str(e)}"
+        )
+

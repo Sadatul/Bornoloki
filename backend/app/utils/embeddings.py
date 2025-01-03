@@ -13,7 +13,9 @@ embeddings_model = OpenAIEmbeddings(
 )
 
 qdrant_client = QdrantClient(
-        url="localhost",  # Using local Qdrant instance
+        # url=settings.qdrant_url,  # Using local Qdrant instance
+        # api_key=settings.qdrant_api_key
+        url="qdrant",
         port=6333
     )
 
