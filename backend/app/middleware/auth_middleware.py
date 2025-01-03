@@ -17,7 +17,6 @@ async def verify_auth(credentials: HTTPAuthorizationCredentials = Security(secur
     try:
         token = credentials.credentials
         # Verify the token using RS256 algorithm and Supabase public key
-        print(token)
         payload = jwt.decode(
             token,
             settings.supabase_jwt_public_key,
