@@ -5,6 +5,7 @@ from supabase import create_client
 from app.database import get_session
 from sqlmodel import Session, select
 from app.models.user import User
+from app.schemas.user import UserRead
 from app.config import settings
 
 router = APIRouter(
@@ -42,7 +43,8 @@ async def create_user(
 
         # print("Got it")
         # Update user role in Supabase
-        user: User = User(uuid=user_id, role=user.role)
+        user_metadata = payload.get("user_metadata", {})
+        user: User = User(uuid=user_id, role=user.role, name=user_metadata.get("name", ""), email=user_metadata.get("email", ""), picture=user_metadata.get("picture", ""))
         session.add(user)
         session.commit()
         session.refresh(user)
@@ -71,6 +73,13 @@ async def create_user(
 #     user = await redis_client.get_json("user")
 #     print(user)
 #     return UserRead(**user, id=1, uuid="123", created_at=datetime.now())
+
+@router.get("/search", response_model=list[UserRead])
+async def search_user(name: str, session: Session = Depends(get_session)):
+    # Search by name with like
+    statement = select(User).where(User.name.like(f"%{name}%"))
+    users = session.exec(statement).all()
+    return users
 
 @router.get("/protected")
 async def protected_route(payload: dict = Depends(verify_auth)):

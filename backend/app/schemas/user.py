@@ -12,6 +12,9 @@ class UserRead(UserBase):
     id: int
     uuid: str
     created_at: datetime
+    name : str | None = None
+    email : str | None = None
+    picture : str | None = None
 
 class UserUpdate(SQLModel):
     pass
