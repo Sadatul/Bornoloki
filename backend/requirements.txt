@@ -6,11 +6,8 @@ pydantic-settings
 python-dotenv
 psycopg2
 redis==5.0.1
-<<<<<<< HEAD
 python-jose[cryptography]>=3.3.0
 supabase>=2.3.0
-=======
 uvicorn==0.22.0
 python-dotenv==1.0.0
 openai==0.27.8
->>>>>>> 6d1678b8f7ea8f061329e1e694aa52c5a7e4fda5
