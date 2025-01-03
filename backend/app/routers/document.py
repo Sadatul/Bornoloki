@@ -14,7 +14,7 @@ router = APIRouter(
 )
 
 @router.post("/", response_model=DocumentRead)
-@require_roles(["user", "admin"])
+@require_roles(allowed_roles=["user", "admin"])
 async def create_document(
     document: DocumentCreate,
     payload: dict = Depends(verify_auth),
