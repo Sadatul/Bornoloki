@@ -34,7 +34,7 @@ COPY --from=builder /app/requirements.txt .
 RUN pip install --no-cache --upgrade /wheels/*
 
 # Copy application code
-COPY ./app backend/app
+COPY ./app ./backend/app
 
 RUN pip install uvicorn
 # Set environment variables
