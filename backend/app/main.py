@@ -5,11 +5,13 @@ from .database import init_db
 from .routers import user_router
 from app.routers import translate_banglish
 from app.routers import document
+from app.utils.embeddings import init_collections
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     init_db()
+    init_collections()
     yield
 
 
