@@ -1,13 +1,16 @@
-import openai
+from langchain_openai import ChatOpenAI
 from app.config import settings
-from app.schemas.translation import BanglishToBanglaResponse
 
-# Initialize OpenAI with the key from settings
-openai.api_key = settings.openai_api_key
+# Initialize the ChatOpenAI model
+chat_model = ChatOpenAI(
+    model="gpt-4o",
+    openai_api_key=settings.openai_api_key,
+    temperature=0.3
+)
 
 async def banglish_to_bangla(banglish_text: str, temperature: float = 0.3) -> str:
     """
-    Convert Banglish text to Bangla using OpenAI's GPT model
+    Convert Banglish text to Bangla using OpenAI's GPT model via Langchain
     
     Args:
         banglish_text (str): The Banglish text to convert
@@ -19,24 +22,24 @@ async def banglish_to_bangla(banglish_text: str, temperature: float = 0.3) -> st
     if not banglish_text.strip():
         return ""
 
+    # Update the model's temperature if different from default
+    chat_model.temperature = temperature
+
     system_prompt = (
         "You accurately convert Banglish (Bengali words written with the Latin alphabet) "
         "to proper Bengali script. Output only the converted text in Bengali. No extra commentary."
     )
 
-    user_prompt = f"Banglish input: {banglish_text}\nPlease provide the exact Bengali script equivalent:\n"
-
     try:
-        response = openai.ChatCompletion.create(
-            model="gpt-4o",  # or another appropriate model
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt},
-            ],
-            temperature=temperature,
-            max_tokens=200,
-        )
-        return response.choices[0].message["content"].strip()
+        # Create messages for the chat
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": f"Banglish input: {banglish_text}\nPlease provide the exact Bengali script equivalent:\n"}
+        ]
+
+        # Get response from the model
+        response = await chat_model.ainvoke(messages)
+        return response.content.strip()
 
     except Exception as e:
         # Log the error if you have logging set up
