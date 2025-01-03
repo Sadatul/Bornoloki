@@ -15,3 +15,7 @@ langchain
 langchain-openai
 qdrant-client
 langchain-qdrant
+transformers
+torch
+torchvision
+torchaudio

@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: bornoloki-backend
+    env: python
+    buildCommand: cd backend && pip install -r requirements.txt
+    startCommand: cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.12
+      - key: PORT
+        value: 8080
+
