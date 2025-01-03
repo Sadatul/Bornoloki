@@ -6,3 +6,6 @@ pydantic-settings
 python-dotenv
 psycopg2
 redis==5.0.1
+uvicorn==0.22.0
+python-dotenv==1.0.0
+openai==0.27.8
