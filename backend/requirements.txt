@@ -18,3 +18,4 @@ transformers
 torch
 torchvision
 torchaudio
+sentencepiece
