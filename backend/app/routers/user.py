@@ -42,13 +42,19 @@ async def create_user(
 
         # print("Got it")
         # Update user role in Supabase
+        user: User = User(uuid=user_id, role=user.role)
+        session.add(user)
+        session.commit()
+        session.refresh(user)
+
         supabase.auth.admin.update_user_by_id(
             user_id,
-            {"user_metadata": {"role": user.role}}
+            {"user_metadata": {
+                "role": user.role,
+                "id": user.id
+                }
+            }
         )
-
-        session.add(User(uuid=user_id, role=user.role))
-        session.commit()
         # print("Got it2")
 
         return {
