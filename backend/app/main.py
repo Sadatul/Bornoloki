@@ -3,11 +3,14 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .database import init_db
 from .routers import user_router
+from app.routers import translate_banglish
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     init_db()
     yield
+
 
 app = FastAPI(lifespan=lifespan)
 
@@ -20,7 +23,9 @@ app.add_middleware(
 )
 
 app.include_router(user_router)
+app.include_router(translate_banglish.router)
+
 
 @app.get("/")
 async def root():
-    return {"message": "Welcome to FastAPI"}
+    return {"message": "Welcome to ByteForgers!"}
