@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .database import init_db
 from .routers import user_router
-from app.routers import translate_banglish
+from app.routers import translate_banglish,training_data
 from app.routers import document
 from app.utils.embeddings import init_collections
 
@@ -16,6 +16,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
+app.include_router(training_data.router)
 
 app.add_middleware(
     CORSMiddleware,
