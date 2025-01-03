@@ -3,7 +3,7 @@ from app.schemas.document import DocumentCreate, DocumentRead
 from app.models.document import Document
 from app.middleware.auth_middleware import verify_auth, require_roles
 from app.database import get_session
-from sqlmodel import Session
+from sqlmodel import Session, select
 from app.utils.translate import banglish_to_bangla
 from langchain.docstore.document import Document as LangchainDocument
 from app.utils.embeddings import DocumentSearch
@@ -146,4 +146,73 @@ async def get_document(
         raise HTTPException(
             status_code=500,
             detail=f"Failed to fetch document: {str(e)}"
+        ) 
+
+@router.get("/user/{user_id}/public", response_model=list[DocumentRead])
+async def get_user_public_documents(
+    user_id: int,
+    session: Session = Depends(get_session),
+    skip: int = Query(0, description="Number of documents to skip"),
+    limit: int = Query(10, description="Number of documents to return")
+):
+    try:
+        # Query for public documents of the specified user
+        statement = (
+            select(Document)
+            .where(Document.user_id == user_id)
+            .where(Document.is_public == True)
+            .offset(skip)
+            .limit(limit)
+            .order_by(Document.upload_date.desc())
+        )
+        
+        documents = session.exec(statement).all()
+        return documents
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to fetch documents: {str(e)}"
+        ) 
+
+@router.get("/my/all", response_model=list[DocumentRead])
+@require_roles(["user", "admin"])
+async def get_my_documents(
+    payload: dict = Depends(verify_auth),
+    session: Session = Depends(get_session),
+    skip: int = Query(0, description="Number of documents to skip"),
+    limit: int = Query(10, description="Number of documents to return"),
+    sort_by: str = Query("upload_date", description="Sort by field: upload_date or title"),
+    order: str = Query("desc", description="Sort order: asc or desc")
+):
+    try:
+        # Get user_id from token metadata
+        user_metadata = payload.get("user_metadata", {})
+        user_id = user_metadata.get("id")
+        
+        if not user_id:
+            raise HTTPException(
+                status_code=400,
+                detail="User ID not found in token metadata"
+            )
+
+        # Build the query
+        statement = select(Document).where(Document.user_id == user_id)
+
+        # Add sorting
+        if sort_by == "title":
+            order_by = Document.title.desc() if order == "desc" else Document.title.asc()
+        else:  # default to upload_date
+            order_by = Document.upload_date.desc() if order == "desc" else Document.upload_date.asc()
+
+        statement = statement.order_by(order_by).offset(skip).limit(limit)
+        
+        # Execute query
+        documents = session.exec(statement).all()
+        return documents
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to fetch documents: {str(e)}"
         ) 
