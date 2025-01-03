@@ -2,6 +2,9 @@ import openai
 from fastapi import APIRouter, HTTPException
 from app.schemas.translation import BanglishToBanglaRequest, BanglishToBanglaResponse
 from app.utils.translate import banglish_to_bangla as banglish_to_bangla_util
+from transformers import AutoTokenizer
+from transformers import AutoModelForSeq2SeqLM
+import torch
 
 router = APIRouter(prefix="/v1", tags=["BanglishToBangla"])
 model_name = "munimthahmid/bornoloki"
