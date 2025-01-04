@@ -21,7 +21,8 @@ Welcome to the **Bornoloki** application that converts Banglish (a mixture of Be
     - [Documents & Search](#documents--search)  
     - [Continuous Learning API](#continuous-learning-api)  
 11. [Future Enhancements](#future-enhancements)  
-12. [License](#license)
+12. [Challenges We Faced](#challenges-we-faced)  
+13. [License](#license)
 
 ---
 
@@ -332,6 +333,18 @@ This feature allows **users** to contribute corrected Banglish→Bangla pairs, a
 - **Analytics Dashboard**: Track usage metrics (number of translations, user stats, etc.).  
 - **PDF Export**: Generate shareable PDFs with custom Bangla fonts and AI-generated captions.  
 - **Real-Time Collaboration**: Let multiple users edit the same document concurrently.
+
+---
+
+## Challenges We Faced
+
+Our team encountered several significant technical challenges during development:
+
+- Implementing effective bilingual search that works consistently across both Banglish and Bangla scripts while maintaining proper text normalization
+- Learning and implementing Qdrant vector database from scratch, including understanding embedding storage and optimizing search performance
+- Tackling voice integration complexities, especially with Banglish speech-to-text conversion and accent variations, which remains partially implemented
+
+These challenges provided valuable insights into building robust bilingual applications and working with modern search technologies.
 
 ---
 
