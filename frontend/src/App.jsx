@@ -1,47 +1,115 @@
 import {
-  createBrowserRouter,
-  RouterProvider,
+  BrowserRouter as Router,
+  Routes,
+  Route,
   Navigate,
 } from "react-router-dom";
-import ErrorBoundary from "./components/ErrorBoundary";
-import { AuthForm } from "./components/AuthForm";
-import { Dashboard } from "./components/Dashboard";
-import { AuthProvider, useAuth } from "./contexts/AuthContext";
-import ProtectedRoute from "./components/ProtectedRoute";
+import TextEditor from "./pages/TextEditor";
+import AuthLayout from "./components/Auth/AuthLayout";
+import LoginForm from "./components/Auth/LoginForm";
+import PrivateRoute from "./components/Auth/PrivateRoute";
+import { AuthProvider } from "./contexts/AuthContext";
+import { ThemeProvider } from "./contexts/ThemeContext";
+import { SearchProvider } from "./contexts/SearchContext";
+import { DocumentProvider } from "./contexts/DocumentContext";
+import AppLayout from "./components/AppLayout";
+import ChatBot from "./pages/Chatbot";
+import { ChatProvider } from "./contexts/ChatContext";
+import ProfilePage from "./pages/ProfilePage";
+import ContributePage from "./pages/ContributePage";
+import AdminReview from "./pages/AdminReview";
 
-const router = createBrowserRouter([
-  {
-    path: "/login",
-    element: <AuthForm />,
-  },
-  {
-    path: "/dashboard",
-    element: (
-      <ProtectedRoute>
-        <Dashboard />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/",
-    element: <Navigate to="/dashboard" />,
-  },
-]);
-
-function App() {
+export default function App() {
   return (
-    <AuthProvider>
-      <ErrorBoundary>
-        <RouterProvider
-          router={router}
-          future={{
-            v7_startTransition: true,
-            v7_relativeSplatPath: true,
-          }}
-        />
-      </ErrorBoundary>
-    </AuthProvider>
+    <Router>
+      <AuthProvider>
+        <ThemeProvider>
+          <SearchProvider>
+            <DocumentProvider>
+              <ChatProvider>
+                <Routes>
+                  <Route
+                    path="/admin/review"
+                    element={
+                      <PrivateRoute>
+                        <AppLayout>
+                          <AdminReview />
+                        </AppLayout>
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="/chat"
+                    element={
+                      <PrivateRoute>
+                        <AppLayout>
+                          <ChatBot />
+                        </AppLayout>
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="/profile/:userId"
+                    element={
+                      <PrivateRoute>
+                        <AppLayout>
+                          <ProfilePage />
+                        </AppLayout>
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="/profile"
+                    element={
+                      <PrivateRoute>
+                        <AppLayout>
+                          <ProfilePage />
+                        </AppLayout>
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="/editor"
+                    element={<Navigate to="/editor/new" replace />}
+                  />
+                  <Route
+                    path="/editor/:id"
+                    element={
+                      <PrivateRoute>
+                        <AppLayout>
+                          <TextEditor />
+                        </AppLayout>
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="/contribute"
+                    element={
+                      <PrivateRoute>
+                        <AppLayout>
+                          <ContributePage />
+                        </AppLayout>
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="/login"
+                    element={
+                      <AuthLayout>
+                        <LoginForm />
+                      </AuthLayout>
+                    }
+                  />
+                  <Route
+                    path="*"
+                    element={<Navigate to="/editor/new" replace />}
+                  />
+                </Routes>
+              </ChatProvider>
+            </DocumentProvider>
+          </SearchProvider>
+        </ThemeProvider>
+      </AuthProvider>
+    </Router>
   );
 }
-
-export default App;

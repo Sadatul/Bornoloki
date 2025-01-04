@@ -1,114 +1,100 @@
+// src/contexts/AuthContext.jsx
 import { createContext, useContext, useEffect, useState } from "react";
-import { supabase } from "../lib/supabase";
+import { supabase } from "@/lib/supabase";
+import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext({});
 
-// eslint-disable-next-line react/prop-types
-export function AuthProvider({ children }) {
+export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Check active sessions and sets the user
-    supabase.auth
-      .getSession()
-      .then(({ data: { session } }) => {
-        setUser(session?.user ?? null);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Session check error:", err);
-        setLoading(false);
-      });
+    // Check active sessions and set the user
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
 
-    // Listen for changes on auth state (login, logout, etc.)
+    // Listen for changes on auth state (logged in, signed out, etc.)
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      setSession(session);
       setUser(session?.user ?? null);
+      setLoading(false);
+
+      if (event === "SIGNED_IN") {
+        // Send access token to backend
+        try {
+          await fetch(`${import.meta.env.VITE_API_URL}/user/register`, {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${session.access_token}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ role: "user" }),
+          });
+          // Removed automatic navigation to /editor
+        } catch (error) {
+          console.error("Error sending access token to backend:", error);
+        }
+      } else if (event === "SIGNED_OUT") {
+        navigate("/login");
+      }
     });
 
     return () => subscription.unsubscribe();
-  }, []);
-
-  // Sign up with email/password
-  const signUp = (email, password) => {
-    return supabase.auth.signUp({
-      email,
-      password,
-    });
-  };
-
-  // Sign in with email/password
-  const signIn = (email, password) => {
-    return supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-  };
-
-  // Sign in with Google
-  const signInWithGoogle = async () => {
-    return supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        queryParams: {
-          prompt: "consent",
-          access_type: "offline",
-        },
-      },
-    });
-  };
-
-  // Sign out
-  // const signOut = async () => {
-  //   try {
-  //     return await supabase.auth.signOut();
-  //   } catch (err) {
-  //     console.error("Sign out error:", err);
-  //   }
-  // };
-
-  const signOut = async () => {
-    try {
-      const response = await supabase.auth.signOut();
-      return { error: null };
-    } catch (err) {
-      console.error("Sign out error:", err);
-      return {
-        error: {
-          message:
-            err instanceof Error
-              ? err.message
-              : "An error occurred during sign out",
-        },
-      };
-    }
-  };
+  }, [navigate]);
 
   const value = {
+    session,
     user,
-    signUp,
-    signIn,
-    signInWithGoogle,
-    signOut,
+    loading,
+    signIn: async (email, password) => {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (error) throw error;
+    },
+    signInWithGoogle: async () => {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}/editor`,
+          queryParams: {
+            access_type: "offline",
+            prompt: "consent",
+          },
+        },
+      });
+      if (error) throw error;
+    },
+    signUp: async (email, password) => {
+      const { error } = await supabase.auth.signUp({ email, password });
+      if (error) throw error;
+    },
+    signOut: async () => {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+    },
   };
 
   return (
     <AuthContext.Provider value={value}>
-      {loading ? (
-        <div
-          style={{ display: "flex", justifyContent: "center", padding: "20px" }}
-        >
-          Loading...
-        </div>
-      ) : (
-        children
-      )}
+      {!loading && children}
     </AuthContext.Provider>
   );
-}
+};
 
 export const useAuth = () => {
-  return useContext(AuthContext);
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
 };

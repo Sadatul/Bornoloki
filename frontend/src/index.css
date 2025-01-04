@@ -1,3 +1,73 @@
+@import "react-quill/dist/quill.snow.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Quill Editor Styles */
+.editor-wrapper {
+  /* Remove fixed heights */
+  display: flex;
+  flex-direction: column;
+  min-height: 300px;
+}
+
+.editor-wrapper .ql-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.editor-wrapper .ql-editor {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 300px;
+  /* Remove max-height to allow content to grow */
+}
+
+.ql-snow.ql-toolbar {
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 1;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  padding: 8px 0;
+}
+
+/* Custom styles for better visual hierarchy */
+.ql-editor {
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.ql-editor p {
+  margin-bottom: 1em;
+}
+
+.ql-editor h1 {
+  font-size: 2em;
+  margin-bottom: 0.5em;
+}
+
+.ql-editor h2 {
+  font-size: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.ql-editor h3 {
+  font-size: 1.17em;
+  margin-bottom: 0.5em;
+}
+
+.ql-snow .ql-toolbar button {
+  width: 28px;
+  height: 28px;
+  padding: 3px 5px;
+}
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+  }
+}

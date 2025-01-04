@@ -1,0 +1,57 @@
+/* Dark mode styles for Quill editor */
+.dark-editor .ql-toolbar {
+  background-color: #1e293b !important; /* slate-800 */
+  border-color: #334155 !important; /* slate-700 */
+}
+
+.dark-editor .ql-toolbar .ql-stroke {
+  stroke: #e2e8f0 !important; /* slate-200 */
+}
+
+.dark-editor .ql-toolbar .ql-fill {
+  fill: #e2e8f0 !important; /* slate-200 */
+}
+
+.dark-editor .ql-toolbar .ql-picker {
+  color: #e2e8f0 !important; /* slate-200 */
+}
+
+.dark-editor .ql-toolbar .ql-picker-options {
+  background-color: #1e293b !important; /* slate-800 */
+  border-color: #334155 !important; /* slate-700 */
+}
+
+.dark-editor .ql-container {
+  border-color: #334155 !important; /* slate-700 */
+}
+
+.dark-editor .ql-editor {
+  background-color: #1e293b !important; /* slate-800 */
+  color: #e2e8f0 !important; /* slate-200 */
+}
+
+.dark-editor .ql-editor.ql-blank::before {
+  color: #94a3b8 !important; /* slate-400 */
+}
+
+/* Toolbar button hover states */
+.dark-editor .ql-toolbar button:hover .ql-stroke,
+.dark-editor .ql-toolbar button.ql-active .ql-stroke {
+  stroke: #60a5fa !important; /* blue-400 */
+}
+
+.dark-editor .ql-toolbar button:hover .ql-fill,
+.dark-editor .ql-toolbar button.ql-active .ql-fill {
+  fill: #60a5fa !important; /* blue-400 */
+}
+
+/* Dropdown hover states */
+.dark-editor .ql-toolbar .ql-picker-options .ql-picker-item:hover {
+  color: #60a5fa !important; /* blue-400 */
+}
+
+/* Selected text highlight color */
+.dark-editor .ql-editor ::selection {
+  background-color: #3b82f6 !important; /* blue-500 */
+  color: white !important;
+}
