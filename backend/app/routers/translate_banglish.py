@@ -1,10 +1,14 @@
 import openai
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from app.schemas.translation import BanglishToBanglaRequest, BanglishToBanglaResponse
 from app.utils.translate import banglish_to_bangla as banglish_to_bangla_util
 from transformers import AutoTokenizer
 from transformers import AutoModelForSeq2SeqLM
 import torch
+from app.utils.analytics import track_translation
+from sqlmodel import Session
+from app.database import get_session
+from app.middleware.auth_middleware import verify_auth
 
 router = APIRouter(prefix="/v1", tags=["BanglishToBangla"])
 model_name = "munimthahmid/bornoloki"
@@ -34,7 +38,11 @@ async def banglish_to_bangla_deprecated(payload: BanglishToBanglaRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/banglish-to-bangla", response_model=BanglishToBanglaResponse)
-async def banglish_to_bangla(payload: BanglishToBanglaRequest):
+async def banglish_to_bangla(
+    payload: BanglishToBanglaRequest,
+    user_metadata: dict = Depends(verify_auth),
+    session: Session = Depends(get_session)
+):
     banglish_text = payload.banglish_text.strip()
     temperature = payload.temperature
 
@@ -43,6 +51,16 @@ async def banglish_to_bangla(payload: BanglishToBanglaRequest):
 
     try:
         bangla_output = await banglish_to_bangla_util(banglish_text, temperature)
+        # Track analytics
+        user_id = user_metadata.get("user_metadata", {}).get("id")
+        if user_id:
+            word_count = len(payload.banglish_text.split())
+            await track_translation(
+                session=session,
+                user_id=user_id,
+                word_count=word_count,
+                translation_type="banglish_to_bangla"
+            )
         return BanglishToBanglaResponse(bangla_text=bangla_output)
 
     except Exception as e:
