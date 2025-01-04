@@ -49,14 +49,20 @@ This project addresses the hackathon scenario where Rina, a teacher, needs an ea
    - **Search** user documents via queries in either Banglish or Bangla.  
    - Public/Private flags for document visibility.
 
-4. **Continuous Learning**  
+4. **AI-Powered Chatbot**
+   - **Context-Aware** responses based on user's stories and documents
+   - Ability to answer questions in both Banglish and Bangla
+   - Uses embeddings to maintain conversation context
+   - Powered by OpenAI's GPT models for natural interactions
+
+5. **Continuous Learning**  
    - Users can **contribute** new translation pairs (Banglish text + corrected Bangla).  
    - **Admins** can verify those pairs before they become part of the training data.
 
-5. **Basic Admin Controls**  
+6. **Basic Admin Controls**  
    - Admin routes for verification and user management.
 
-6. **Share stories**
+7. **Share stories**
    - Users can make there stories public
    - Other users can searh there profiles and view these public stories
 
