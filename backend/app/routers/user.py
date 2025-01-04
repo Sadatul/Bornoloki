@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from app.schemas.user import UserCreate
 from app.middleware.auth_middleware import verify_auth, require_roles
 from supabase import create_client
@@ -77,9 +77,9 @@ async def create_user(
 #     return UserRead(**user, id=1, uuid="123", created_at=datetime.now())
 
 @router.get("/search", response_model=list[UserRead])
-async def search_user(name: str, session: Session = Depends(get_session)):
-    # Search by name with like
-    statement = select(User).where(User.name.like(f"%{name}%"))
+async def search_user(name: str = Query(..., description="Name to search for", alias="query"), session: Session = Depends(get_session)):
+    # Search by name with case-insensitive like
+    statement = select(User).where(User.name.ilike(f"%{name}%"))
     users = session.exec(statement).all()
     return users
 
