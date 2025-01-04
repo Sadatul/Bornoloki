@@ -9,18 +9,19 @@ Welcome to the **Bornoloki** application that converts Banglish (a mixture of Be
 1. [Overview](#overview)  
 2. [Core Features Implemented](#core-features-implemented)  
 3. [Layered Architecture](#layered-architecture)  
-4. [Tech Stack & Requirements](#tech-stack--requirements)  
-5. [Installation & Setup](#installation--setup)  
-6. [Project Structure](#project-structure)  
-7. [Environment Variables](#environment-variables)  
-8. [Running the App](#running-the-app)  
-9. [API Usage](#api-usage)  
-   - [Authentication](#authentication)  
-   - [Banglish-to-Bangla Translation](#banglish-to-bangla-translation)  
-   - [Documents & Search](#documents--search)  
-   - [Continuous Learning API](#continuous-learning-api)  
-10. [Future Enhancements](#future-enhancements)  
-11. [License](#license)
+4. [Class Diagram](#class-diagram)  
+5. [Tech Stack & Requirements](#tech-stack--requirements)  
+6. [Installation & Setup](#installation--setup)  
+7. [Project Structure](#project-structure)  
+8. [Environment Variables](#environment-variables)  
+9. [Running the App](#running-the-app)  
+10. [API Usage](#api-usage)  
+    - [Authentication](#authentication)  
+    - [Banglish-to-Bangla Translation](#banglish-to-bangla-translation)  
+    - [Documents & Search](#documents--search)  
+    - [Continuous Learning API](#continuous-learning-api)  
+11. [Future Enhancements](#future-enhancements)  
+12. [License](#license)
 
 ---
 
@@ -66,6 +67,11 @@ This project addresses the hackathon scenario where Rina, a teacher, needs an ea
 Our application follows a clean, layered architecture pattern that separates concerns and promotes maintainability:
 
 ![Layered Architecture](assets/layered_architecture.png)
+
+### Class Diagram
+Here's a detailed view of our application's class structure and relationships:
+
+![Class Diagram](assets/class_diagram.svg)
 
 ---
 
@@ -137,85 +143,59 @@ Our application follows a clean, layered architecture pattern that separates con
 A simplified view of the file organization:
 
 ```
-   README.md
-   frontend/
-   ├── components.json
-   ├── .env
-   ├── eslint.config.js
-   ├── .gitignore
-   ├── index.html
-   ├── package.json
-   ├── package-lock.json
-   ├── postcss.config.js
-   ├── public
-   │   └── vite.svg
-   ├── README.md
-   ├── src
-   │   ├── App.css
-   │   ├── App.jsx
-   │   ├── assets
-   │   │   └── react.svg
-   │   ├── components
-   │   │   ├── Animation
-   │   │   │   ├── AnimateWave.jsx
-   │   │   │   ├── FloatingLetter.jsx
-   │   │   │   └── FloatingLetters.jsx
-   │   │   ├── AppLayout.jsx
-   │   │   ├── Auth
-   │   │   │   ├── AuthLayout.jsx
-   │   │   │   ├── LoginForm.jsx
-   │   │   │   └── PrivateRoute.jsx
-   │   │   ├── ChatInput.jsx
-   │   │   ├── ChatMessage.jsx
-   │   │   ├── DocumentList.jsx
-   │   │   ├── Profile
-   │   │   ├── SearchResults.jsx
-   │   │   └── ui
-   │   │       ├── avatar.jsx
-   │   │       ├── button.jsx
-   │   │       ├── card.jsx
-   │   │       ├── input.jsx
-   │   │       └── tabs.jsx
-   │   ├── contexts
-   │   │   ├── AuthContext.jsx
-   │   │   ├── ChatContext.jsx
-   │   │   ├── DocumentContext.jsx
-   │   │   ├── SearchContext.jsx
-   │   │   └── ThemeContext.jsx
-   │   ├── index.css
-   │   ├── lib
-   │   │   ├── openai.js
-   │   │   ├── supabase.js
-   │   │   ├── utils.js
-   │   │   └── utils.ts
-   │   ├── main.jsx
-   │   ├── pages
-   │   │   ├── Chatbot.jsx
-   │   │   ├── ProfilePage.jsx
-   │   │   └── TextEditor.jsx
-   │   ├── styles
-   │   │   └── editor.css
-   │   └── utils
-   │       └── gemini.js
-   ├── tailwind.config.js
-   ├── tsconfig.json
-   └── vite.config.js
-
-   backend/
-   ├── app/
-   │   ├── main.py                   # FastAPI entry point
-   │   ├── config.py                 # Load environment variables (Settings class)
-   │   ├── database.py               # Database session & initialization
-   │   ├── models/                   # SQLModel or SQLAlchemy models
-   │   ├── routers/                  # All API endpoints grouped by feature
-   │   ├── schemas/                  # Pydantic models for requests/responses
-   │   ├── utils/                    # Helper functions (post-processing, caching, etc.)
-   │   └── redis.py                  # Redis client setup
-   ├── requirements.txt
-   ├── Dockerfile
-   ├── compose.yaml
-   └── .env
+README.md
+frontend/
+├── src/
+│   ├── components/
+│   │   ├── Animation/
+│   │   │   ├── AnimateWave.jsx
+│   │   │   ├── FloatingLetter.jsx
+│   │   │   └── FloatingLetters.jsx
+│   │   ├── Auth/
+│   │   │   ├── AuthLayout.jsx
+│   │   │   ├── LoginForm.jsx
+│   │   │   └── PrivateRoute.jsx
+│   │   ├── Profile/
+│   │   ├── ui/
+│   │   │   ├── avatar.jsx
+│   │   │   ├── button.jsx
+│   │   │   ├── card.jsx
+│   │   │   └── input.jsx
+│   │   ├── AppLayout.jsx
+│   │   ├── ChatInput.jsx
+│   │   ├── ChatMessage.jsx
+│   │   ├── DocumentList.jsx
+│   │   └── SearchResults.jsx
+│   ├── contexts/
+│   │   ├── AuthContext.jsx
+│   │   ├── ChatContext.jsx
+│   │   ├── DocumentContext.jsx
+│   │   ├── SearchContext.jsx
+│   │   └── ThemeContext.jsx
+│   ├── lib/
+│   │   ├── openai.js
+│   │   ├── supabase.js
+│   │   └── utils.js
+│   └── pages/
+│       ├── Chatbot.jsx
+│       ├── ProfilePage.jsx
+│       └── TextEditor.jsx
+backend/
+├── app/
+│   ├── main.py                   # FastAPI entry point
+│   ├── config.py                 # Load environment variables
+│   ├── database.py               # Database session & initialization
+│   ├── models/                   # SQLModel models
+│   ├── routers/                  # API endpoints grouped by feature
+│   ├── schemas/                  # Pydantic models
+│   ├── utils/                    # Helper functions
+│   └── redis.py                  # Redis client setup
+├── requirements.txt
+├── Dockerfile
+└── compose.yaml
 ```
+
+> **Note:** Trivial configuration files (like package.json, vite.config.js, tsconfig.json, etc.) and standard project files have been omitted from this diagram for clarity. The structure focuses on the main application components and business logic.
 
 ---
 
@@ -234,7 +214,7 @@ OPENAI_API_KEY=**************
 QDRANT_URL=*****************
 QDRANT_API_KEY=********
 ```
-**Note**:
+> **Note:** 
    This .env is given for docker compose run setup. If you choose to run without docker a few changes needs to be made...
    
    * change postgres_db host of DB_URL to localhost
