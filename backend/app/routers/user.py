@@ -6,6 +6,8 @@ from app.database import get_session
 from sqlmodel import Session, select
 from app.models.user import User
 from app.schemas.user import UserRead
+from app.schemas.chat import ChatRequest, ChatResponse
+from app.utils.chatbot import chatbot
 from app.config import settings
 
 router = APIRouter(
@@ -120,4 +122,16 @@ async def get_user(
             status_code=500,
             detail=f"Failed to fetch user: {str(e)}"
         )
+
+@router.post("/chat", response_model=ChatResponse)
+async def chat_endpoint(
+    request: ChatRequest,
+    payload: dict = Depends(verify_auth)
+):
+    user_id = payload.get("sub")
+    if not user_id:
+        raise HTTPException(status_code=400, detail="Invalid token: no user ID found")
+    response, context_used = await chatbot.process_query(request.query, request.is_bangla, user_id=user_id)
+    return ChatResponse(response=response, context_used=context_used)
+
 
