@@ -75,6 +75,11 @@ Our application follows a clean, layered architecture pattern that separates con
 
 ![Layered Architecture](assets/layered_architecture.png)
 
+### System Diagram
+Here's a high level overview of our system design
+![bornoloki-sys-dia](https://github.com/user-attachments/assets/882ac94c-d737-4269-ae89-43fa84321c66)
+
+
 ### Class Diagram
 Here's a detailed view of our application's class structure and relationships:
 
